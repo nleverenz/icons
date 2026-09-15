@@ -5,27 +5,18 @@ import { getCatalog, getIcon } from "@/app/(api)/catalog";
 import { buildDownloadUrl, SITE_URL } from "@/app/(api)/lib";
 import { type IconDoc, previewSrc, type VendorMeta } from "@/app/(api)/search-core";
 
-// Long tail renders on first visit and is cached (ISR); a small seed subset is
-// pre-rendered at build time. Avoids building ~5k pages up front.
-export const dynamicParams = true;
-export const revalidate = 86400;
+// GitHub Pages is fully static, so generate every asset page at build time.
+export const dynamicParams = false;
 
 type Params = { vendor: string; name: string };
 
-const SEED_PER_VENDOR = 50;
-
-// Non-empty seed so the route deploys as ISR without a build-time blow-up.
 export async function generateStaticParams(): Promise<Params[]> {
   const { icons } = await getCatalog();
-  const perVendor = new Map<string, number>();
-  const seed: Params[] = [];
-  for (const icon of icons) {
-    const n = perVendor.get(icon.vendor) ?? 0;
-    if (n >= SEED_PER_VENDOR) continue;
-    perVendor.set(icon.vendor, n + 1);
-    seed.push({ vendor: icon.vendor, name: icon.name });
-  }
-  return seed;
+
+  return icons.map((icon) => ({
+    vendor: icon.vendor,
+    name: icon.name,
+  }));
 }
 
 async function resolve(params: Promise<Params>): Promise<{ icon: IconDoc; vendor: VendorMeta }> {

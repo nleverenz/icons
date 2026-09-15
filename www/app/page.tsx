@@ -108,9 +108,9 @@ function TaxonomyTree({
             </span>
           </button>
 
-          {children &&
-            typeof children === "object" &&
-            Object.keys(children as Record<string, unknown>).length > 0 && (
+          {typeof children === "object" &&
+            children !== null &&
+            Object.keys(children as Record<string, unknown>).length > 0 ? (
               <TaxonomyTree
                 tree={children as Record<string, unknown>}
                 docs={docs}
@@ -119,7 +119,7 @@ function TaxonomyTree({
                 activePath={activePath}
                 onSelectPath={onSelectPath}
               />
-            )}
+            ) : null}
         </div>
         );
       })}
@@ -144,6 +144,8 @@ function AppSidebar({
   }[];
   active?: string;
   onSelect?: (id: string | undefined) => void;
+  activePath?: string[];
+  onSelectPath: (path: string[]) => void;
 }) {
   return (
     <Sidebar>

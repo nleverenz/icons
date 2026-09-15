@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next";
 import { getCatalog } from "./(api)/catalog";
 import { SITE_URL } from "./(api)/lib";
 
+export const dynamic = "force-static";
+
 // One sitemap file covers the whole catalog (well under the 50k URL / 50MB
 // per-file limit). Lists home, vendor-filtered views, and every logical icon
 // so crawlers discover the on-demand (ISR) per-icon pages.

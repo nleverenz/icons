@@ -99,7 +99,8 @@ async function readJson<T>(filePath: string): Promise<T | null> {
 }
 
 export function buildDownloadUrl(vendorId: string, file: string): string {
-  if (file.startsWith("/")) return file;
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+  if (file.startsWith("/")) return `${basePath}${file}`;
   return `${BASE}/${vendorId}/${file}`;
 }
 

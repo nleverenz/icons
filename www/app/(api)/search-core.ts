@@ -46,9 +46,11 @@ export type SearchParams = {
 };
 
 /** Same-origin static asset path for an icon SVG (served from /dist). */
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 export function previewSrc(vendor: string, file: string): string {
-  if (file.startsWith("/")) return file;
-  return `/dist/${vendor}/${file}`;
+  if (file.startsWith("/")) return `${BASE_PATH}${file}`;
+  return `${BASE_PATH}/dist/${vendor}/${file}`;
 }
 
 export type SearchOutcome = {

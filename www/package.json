@@ -11,7 +11,10 @@
     "copy-dist": "rm -rf public/dist && cp -R ../dist public/dist",
     "build-search-index": "node scripts/build-search-index.mjs",
     "predev": "pnpm run build-search-index",
-    "prebuild": "pnpm run copy-dist && pnpm run build-search-index"
+    "prebuild": "pnpm run copy-dist && pnpm run build-search-index && pnpm run copy-library",
+    "copy-library": "rm -rf public/library && cp -R ../library public/library",
+    "clean-library": "rm -rf public/library",
+    "postbuild": "pnpm run clean-library"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
