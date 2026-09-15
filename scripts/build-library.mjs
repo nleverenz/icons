@@ -56,11 +56,30 @@ const records = files.map((sourceFile) => {
   };
 });
 
+function buildTaxonomy(files) {
+  const root = {};
+
+  for (const sourceFile of files) {
+    const relative = path.relative(LIBRARY, sourceFile);
+    const folders = path.dirname(relative).split(path.sep);
+
+    let current = root;
+
+    for (const folder of folders) {
+      if (!current[folder]) current[folder] = {};
+      current = current[folder];
+    }
+  }
+
+  return root;
+}
+
 const data = {
-  name: "AAC Library",
+  name: "AAC",
   vendor: "aac",
   version: "1",
   variants: {},
+  taxonomy: buildTaxonomy(files),
   files: records
 };
 

@@ -65,12 +65,83 @@ function isDarkLogo(vendor: string, variant: IconVariant): boolean {
   return vendor === "svgl" && variant.properties?.theme === "dark";
 }
 
+function TaxonomyTree({
+  tree,
+  docs,
+  path = ["AAC"],
+  depth = 0,
+  activePath,
+  onSelectPath,
+}: {
+  tree: Record<string, unknown>;
+  docs: { vendor: string; tags?: string[] }[];
+  path?: string[];
+  depth?: number;
+  activePath?: string[];
+  onSelectPath: (path: string[]) => void;
+}) {
+  return (
+    <>
+      {Object.entries(tree).map(([name, children]) => {
+        const folderPath = [...path, name];
+        const count = docs.filter(
+          (doc) =>
+            doc.vendor === "aac" &&
+            folderPath.every((part, i) => doc.tags?.[i] === part),
+        ).length;
+
+        return (
+        <div key={`${depth}-${name}`}>
+          <button
+            type="button"
+            onClick={() => onSelectPath(folderPath)}
+            className={`flex w-full items-center rounded-md py-1.5 text-sm hover:bg-sidebar-accent ${
+              activePath?.join("/") === folderPath.join("/")
+                ? "bg-sidebar-accent font-medium"
+                : ""
+            }`}
+            style={{ paddingLeft: `${16 + depth * 16}px` }}
+          >
+            <span>{name}</span>
+            <span className="ml-auto pr-2 text-xs text-muted-foreground">
+              {count}
+            </span>
+          </button>
+
+          {children &&
+            typeof children === "object" &&
+            Object.keys(children as Record<string, unknown>).length > 0 && (
+              <TaxonomyTree
+                tree={children as Record<string, unknown>}
+                docs={docs}
+                path={folderPath}
+                depth={depth + 1}
+                activePath={activePath}
+                onSelectPath={onSelectPath}
+              />
+            )}
+        </div>
+        );
+      })}
+    </>
+  );
+}
+
 function AppSidebar({
   vendors,
+  docs,
   active,
   onSelect,
+  activePath,
+  onSelectPath,
 }: {
-  vendors: { id: string; name?: string; count: number }[];
+  docs: { vendor: string; tags?: string[] }[];
+  vendors: {
+    id: string;
+    name?: string;
+    count: number;
+    taxonomy?: Record<string, unknown>;
+  }[];
   active?: string;
   onSelect?: (id: string | undefined) => void;
 }) {
@@ -102,6 +173,21 @@ function AppSidebar({
                     <span>{set.id === "aac" ? "AAC" : (set.name ?? set.id)}</span>
                     <span className="ml-auto text-xs text-muted-foreground">{set.count}</span>
                   </SidebarMenuButton>
+                  {active === set.id &&
+                    set.taxonomy &&
+                    Object.keys(set.taxonomy).length > 0 && (
+                      <TaxonomyTree
+                        docs={docs}
+                        activePath={activePath}
+                        onSelectPath={onSelectPath}
+                        tree={
+                          set.taxonomy.AAC &&
+                          typeof set.taxonomy.AAC === "object"
+                            ? (set.taxonomy.AAC as Record<string, unknown>)
+                            : set.taxonomy
+                        }
+                      />
+                    )}
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -127,6 +213,8 @@ function IconsExplorer() {
     "vendor",
     parseAsString.withOptions({ history: "push", clearOnDefault: true }),
   );
+
+  const [folderFilter, setFolderFilter] = useState<string[] | undefined>();
 
   // Keep typing fluid: the input tracks `search`, but the heavy filter reads a
   // deferred value so the 5k-item recompute never blocks keystrokes.
@@ -182,6 +270,7 @@ function IconsExplorer() {
         id: v.id,
         name: v.name,
         count: countsByVendor.get(v.id) ?? 0,
+        taxonomy: v.taxonomy,
       })),
     [vendors, countsByVendor],
   );
@@ -211,8 +300,15 @@ function IconsExplorer() {
       q: deferredSearch,
       vendor: vendorFilter ?? undefined,
     });
+
+    const folderItems = folderFilter
+      ? items.filter((icon) =>
+          folderFilter.every((part, i) => icon.tags?.[i] === part),
+        )
+      : items;
+
     const out: { icon: IconDoc; src: string; dark: boolean }[] = [];
-    for (const icon of items) {
+    for (const icon of folderItems) {
       const variant = resolveVariant(icon, variantFilters);
       if (variant) {
         out.push({
@@ -223,7 +319,7 @@ function IconsExplorer() {
       }
     }
     return out;
-  }, [index, docs, deferredSearch, vendorFilter, variantFilters]);
+  }, [index, docs, deferredSearch, vendorFilter, variantFilters, folderFilter]);
 
   // Density-based columns: aim for ~TARGET-wide cells (auto-fill), so cells stay
   // compact and square at any width instead of ballooning at low column counts.
@@ -268,8 +364,14 @@ function IconsExplorer() {
       <div className="flex h-screen w-full bg-background">
         <AppSidebar
           vendors={vendorsWithCounts}
+          docs={docs}
           active={vendorFilter ?? undefined}
-          onSelect={(id) => setVendorFilter(id ?? null)}
+          activePath={folderFilter}
+          onSelect={(id) => {
+            setVendorFilter(id ?? null);
+            setFolderFilter(undefined);
+          }}
+          onSelectPath={setFolderFilter}
         />
         <main className="flex flex-1 flex-col overflow-hidden">
           <div className="border-b bg-card/40 px-6 py-4 backdrop-blur">
@@ -353,30 +455,42 @@ function IconsExplorer() {
                 }}
               >
                 {icons.map(({ icon, src }) => (
-                  <Link
+                  <div
                     key={icon.id}
-                    href={`/icons/${icon.vendor}/${encodeURIComponent(icon.name)}`}
-                    title={icon.description || icon.name}
                     className="group flex min-w-0 flex-col gap-3"
                   >
-                    <div className="flex min-h-40 w-full items-center justify-center bg-white">
-                      <img
-                        src={src}
-                        alt={icon.name}
-                        loading="lazy"
-                        className="block h-auto max-h-72 w-auto max-w-full object-contain"
-                      />
-                    </div>
+                    <Link
+                      href={`/icons/${icon.vendor}/${encodeURIComponent(icon.name)}`}
+                      title={icon.description || icon.name}
+                      className="flex min-w-0 flex-col gap-3"
+                    >
+                      <div className="flex min-h-40 w-full items-center justify-center bg-white">
+                        <img
+                          src={src}
+                          alt={icon.name}
+                          loading="lazy"
+                          className="block h-auto max-h-72 w-auto max-w-full object-contain"
+                        />
+                      </div>
 
-                    <div className="min-w-0">
-                      <div className="truncate text-sm font-medium text-black">
-                        {icon.name}
+                      <div className="min-w-0">
+                        <div className="truncate text-sm font-medium text-black">
+                          {icon.name}
+                        </div>
+                        <div className="text-xs text-neutral-500">
+                          {icon.vendor}
+                        </div>
                       </div>
-                      <div className="text-xs text-neutral-500">
-                        {icon.vendor}
-                      </div>
-                    </div>
-                  </Link>
+                    </Link>
+
+                    <a
+                      href={src}
+                      download
+                      className="w-fit text-xs text-neutral-500 underline hover:text-black"
+                    >
+                      Download
+                    </a>
+                  </div>
                 ))}
               </div>
             )}

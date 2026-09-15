@@ -27,6 +27,7 @@ export type VendorMeta = {
   url?: string;
   license?: string;
   variants?: Record<string, { title?: string; default?: string; enum?: string[] }>;
+  taxonomy?: Record<string, unknown>;
 };
 
 export type SearchIndexFile = {

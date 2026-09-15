@@ -75,6 +75,7 @@ function build() {
       url: data.url,
       license: data.license,
       variants: variantSpec,
+      taxonomy: data.taxonomy ?? {},
     };
 
     // Group files by (vendor, baseName).

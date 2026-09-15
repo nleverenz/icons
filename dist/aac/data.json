@@ -1,9 +1,28 @@
 {
-  "name": "AAC Library",
+  "name": "AAC",
   "vendor": "aac",
   "version": "1",
   "variants": {},
+  "taxonomy": {
+    "AAC": {
+      "Play": {
+        "Games": {},
+        "Toys": {}
+      }
+    }
+  },
   "files": [
+    {
+      "name": "Mini Muffin Match Up",
+      "file": "src/AAC__Play__Games__Mini Muffin Match-Up.png",
+      "properties": {},
+      "description": "",
+      "tags": [
+        "AAC",
+        "Play",
+        "Games"
+      ]
+    },
     {
       "name": "Bakeshop",
       "file": "src/AAC__Play__Games__bakeshop.png",
@@ -13,6 +32,17 @@
         "AAC",
         "Play",
         "Games"
+      ]
+    },
+    {
+      "name": "Ice Cream Counter",
+      "file": "src/AAC__Play__Toys__Ice Cream Counter.png",
+      "properties": {},
+      "description": "",
+      "tags": [
+        "AAC",
+        "Play",
+        "Toys"
       ]
     }
   ]
