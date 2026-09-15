@@ -47,6 +47,7 @@ export type SearchParams = {
 
 /** Same-origin static asset path for an icon SVG (served from /dist). */
 export function previewSrc(vendor: string, file: string): string {
+  if (file.startsWith("/")) return file;
   return `/dist/${vendor}/${file}`;
 }
 

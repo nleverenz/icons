@@ -113,11 +113,11 @@ export default async function IconPage({ params }: { params: Promise<Params> }) 
       </nav>
 
       <div className="flex flex-col gap-8 sm:flex-row sm:items-start">
-        <div className="flex h-40 w-40 shrink-0 items-center justify-center rounded-2xl border bg-muted/40">
+        <div className="flex h-60 w-60 shrink-0 items-center justify-center rounded-2xl border bg-white p-5">
           <img
             src={preview}
-            alt={`${icon.name} icon`}
-            className={isSvgl ? "h-20 w-20 object-contain" : "h-20 w-20 object-contain dark:invert"}
+            alt={icon.name}
+            className="h-40 w-40 object-contain"
           />
         </div>
 
@@ -136,7 +136,7 @@ export default async function IconPage({ params }: { params: Promise<Params> }) 
               download
               className="inline-flex items-center rounded-md bg-foreground px-4 py-2 text-sm font-medium text-background hover:opacity-90"
             >
-              Download SVG
+              Download
             </a>
             <a
               href={rawUrl}

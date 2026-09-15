@@ -379,7 +379,11 @@ function IconsExplorer() {
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">
-                  {loading ? "Loading icons..." : `Showing ${icons.length} icons`}
+                  {loading
+                    ? "Loading icons..."
+                    : search.trim()
+                      ? `Showing ${icons.length} ${icons.length === 1 ? "result" : "results"} for “${search.trim()}”`
+                      : `Showing ${icons.length} ${icons.length === 1 ? "icon" : "icons"}`}
                 </p>
                 {vendorFilter && (
                   <p className="text-xs text-muted-foreground">

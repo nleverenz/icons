@@ -3,7 +3,7 @@ import path from "node:path";
 
 const LIBRARY = path.resolve("library");
 const OUTPUT = path.resolve("dist/aac");
-const OUTPUT_SRC = path.join(OUTPUT, "src");
+// Assets remain in library/ and are served through www/public/library.
 
 const IMAGE_TYPES = new Set([".png", ".jpg", ".jpeg", ".webp", ".svg"]);
 
@@ -34,7 +34,7 @@ function niceName(filename) {
 }
 
 fs.rmSync(OUTPUT, { recursive: true, force: true });
-fs.mkdirSync(OUTPUT_SRC, { recursive: true });
+fs.mkdirSync(OUTPUT, { recursive: true });
 
 const files = scan(LIBRARY);
 
@@ -42,14 +42,11 @@ const records = files.map((sourceFile) => {
   const relative = path.relative(LIBRARY, sourceFile);
   const folders = path.dirname(relative).split(path.sep);
 
-  const outputName = relative.replaceAll(path.sep, "__");
-  const destination = path.join(OUTPUT_SRC, outputName);
-
-  fs.copyFileSync(sourceFile, destination);
+  const libraryPath = relative.split(path.sep).join("/");
 
   return {
     name: niceName(sourceFile),
-    file: `src/${outputName}`,
+    file: `/library/${libraryPath}`,
     properties: {},
     description: "",
     tags: folders
