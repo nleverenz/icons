@@ -3,9 +3,9 @@ import Link from "next/link";
 import { SITE_URL } from "../(api)/lib";
 
 export const metadata: Metadata = {
-  title: "API Reference | Grida Icons",
+  title: "API Reference | AAC Library",
   description:
-    "Free, public, zero-auth REST API for searching 5,000+ icons across Heroicons, Lucide, Phosphor, Octicons, Radix, and SVGL — with keywords, descriptions, and downloadable SVGs.",
+    "A free, zero-auth REST API for searching and downloading symbols from this AAC library, with keywords, descriptions, and direct image URLs.",
   alternates: { canonical: "/docs" },
 };
 
@@ -73,9 +73,9 @@ export default function DocsPage() {
 
       <h1 className="text-3xl font-bold">API Reference</h1>
       <p className="mt-3 text-base text-muted-foreground">
-        A free, public, zero-auth REST API over the Grida Icons catalog — 5,000+ icons from
-        Heroicons, Lucide, Phosphor, Octicons, Radix UI, and SVGL, enriched with keywords and
-        descriptions. No API key, CORS open to all origins, responses cached at the edge.
+        A free, zero-auth REST API over this AAC symbol catalog, enriched with keywords and
+        category tags. No API key required, CORS is open to all origins, and responses are
+        cached at the edge.
       </p>
 
       <section className="mt-8">
@@ -97,31 +97,31 @@ export default function DocsPage() {
         <ParamTable
           params={[
             { name: "q", type: "string", desc: "Search query (matches name + tags). Alias: name." },
-            { name: "vendor", type: "string", desc: "Restrict to one set, e.g. lucide-icons." },
+            { name: "vendor", type: "string", desc: 'Restrict to one set, e.g. "aac".' },
             { name: "limit", type: "number", desc: "Page size. Default 100, max 500." },
             { name: "offset", type: "number", desc: "Pagination offset. Default 0." },
           ]}
         />
-        <Code>{`curl "${base}/api/search?q=trash&limit=2"`}</Code>
+        <Code>{`curl "${base}/api/search?q=muffin&limit=2"`}</Code>
         <Code>{`{
-  "total": 16,
-  "count": 2,
+  "total": 1,
+  "count": 1,
   "limit": 2,
   "offset": 0,
   "items": [
     {
-      "id": "heroicons/trash",
-      "vendor": "heroicons",
-      "name": "trash",
-      "description": "Wastebasket symbol indicating the action of deleting data.",
-      "tags": ["trash", "delete", "remove", "bin"],
-      "download": "${base}/dist/heroicons/src/24/outline/trash.svg",
-      "url": "/icons/heroicons/trash",
+      "id": "aac/Mini Muffin Match Up",
+      "vendor": "aac",
+      "name": "Mini Muffin Match Up",
+      "description": "",
+      "tags": ["AAC", "Play", "Games"],
+      "download": "/icons/library/AAC/Play/Games/Mini Muffin Match-Up.png",
+      "url": "/icons/aac/Mini Muffin Match Up",
       "variants": [
         {
-          "name": "trash",
-          "properties": { "size": "24", "style": "solid" },
-          "download": "${base}/dist/heroicons/src/24/solid/trash.svg"
+          "name": "Mini Muffin Match Up",
+          "properties": {},
+          "download": "/icons/library/AAC/Play/Games/Mini Muffin Match-Up.png"
         }
       ]
     }
@@ -150,20 +150,7 @@ export default function DocsPage() {
             },
           ]}
         />
-        <Code>{`curl "${base}/api?vendor=phosphor-icons&variant:weight=bold"`}</Code>
-      </section>
-
-      {/* ---------------- Logos ---------------- */}
-      <section className="mt-12 border-t pt-8">
-        <h2 className="text-xl font-semibold">Brand logos (SVGL)</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Same shape as <span className="font-mono text-xs">/api</span>, scoped to the SVGL brand
-          logo set (light/dark themes, symbol/wordmark kinds).
-        </p>
-        <div className="mt-4">
-          <Method path="/api/logos" />
-        </div>
-        <Code>{`curl "${base}/api/logos?variant:theme=dark"`}</Code>
+        <Code>{`curl "${base}/api?vendor=aac"`}</Code>
       </section>
 
       {/* ---------------- Vendors ---------------- */}
@@ -176,17 +163,14 @@ export default function DocsPage() {
           <Method path="/api/vendors" />
         </div>
         <Code>{`{
-  "total": 6,
+  "total": 1,
   "items": [
     {
-      "id": "heroicons",
-      "name": "Heroicons",
-      "version": "2.2.0",
-      "count": 1288,
-      "variants": {
-        "size": { "title": "Size", "default": "24", "enum": ["16", "20", "24"] },
-        "style": { "title": "Style", "default": "outline", "enum": ["solid", "outline"] }
-      }
+      "id": "aac",
+      "name": "AAC",
+      "version": "1",
+      "count": 3,
+      "variants": {}
     }
   ]
 }`}</Code>
@@ -194,16 +178,13 @@ export default function DocsPage() {
 
       {/* ---------------- Assets ---------------- */}
       <section className="mt-12 border-t pt-8">
-        <h2 className="text-xl font-semibold">Raw SVG assets</h2>
+        <h2 className="text-xl font-semibold">Raw image assets</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Every <span className="font-mono text-xs">download</span> URL points at the raw SVG,
-          served with <span className="font-mono text-xs">Access-Control-Allow-Origin: *</span> and
-          an immutable one-year cache — safe to hotlink or embed directly.
+          Every <span className="font-mono text-xs">download</span> URL from the responses above
+          points directly at the image file — safe to use as-is in an{" "}
+          <span className="font-mono text-xs">&lt;img&gt;</span> tag.
         </p>
-        <div className="mt-4">
-          <Method path="/dist/{vendor}/{file}" />
-        </div>
-        <Code>{`<img src="${base}/dist/lucide-icons/src/arrow-up.svg" width="24" height="24" />`}</Code>
+        <Code>{`<img src="${base}/library/AAC/Play/Games/bakeshop.png" width="64" height="64" alt="Bakeshop" />`}</Code>
       </section>
 
       {/* ---------------- Notes ---------------- */}

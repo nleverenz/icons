@@ -30,11 +30,11 @@ async function resolve(params: Promise<Params>): Promise<{ icon: IconDoc; vendor
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { vendor, name } = await params;
   const icon = await getIcon(vendor, decodeURIComponent(name));
-  if (!icon) return { title: "Icon not found | Grida Icons" };
+  if (!icon) return { title: "Icon not found | AAC Library" };
 
   const { vendors } = await getCatalog();
   const vendorName = vendors[icon.vendor]?.name ?? icon.vendor;
-  const title = `${icon.name} icon — ${vendorName} | Grida Icons`;
+  const title = `${icon.name} icon — ${vendorName} | AAC Library`;
   const description =
     icon.description ||
     `Download the "${icon.name}" icon from ${vendorName} as SVG. Free and open source.`;
@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
       title,
       description,
       url: canonical,
-      siteName: "Grida Icons",
+      siteName: "AAC Library",
       images: [{ url: ogImage, width: 512, height: 512, alt: `${icon.name} icon` }],
     },
     twitter: {

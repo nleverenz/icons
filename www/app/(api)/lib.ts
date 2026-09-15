@@ -78,7 +78,9 @@ export function parseItemsQuery(request: Request): ItemsQuery {
 }
 
 const HOST =
-  process.env.NODE_ENV === "production" ? "https://icons.grida.co" : "http://localhost:3001";
+  process.env.NODE_ENV === "production"
+    ? "https://nleverenz.github.io/icons"
+    : "http://localhost:3001";
 const BASE = `${HOST}/dist`;
 
 /**

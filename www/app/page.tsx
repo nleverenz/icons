@@ -5,7 +5,6 @@ import Link from "next/link";
 import { parseAsString, useQueryState } from "nuqs";
 import { Search } from "lucide-react";
 import type MiniSearch from "minisearch";
-import { GridaLogo } from "@/components/grida-logo";
 import {
   Sidebar,
   SidebarContent,

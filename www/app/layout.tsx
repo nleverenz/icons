@@ -17,11 +17,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Grida Icons - Icon Library",
+    default: "AAC Library",
     template: "%s",
   },
   description:
-    "A comprehensive icon library with rich metadata for easy search, preview, and import.",
+    "A personal library of AAC symbols and visuals, organized for quick search and download.",
 };
 
 export default function RootLayout({
