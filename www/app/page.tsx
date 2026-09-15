@@ -18,6 +18,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
@@ -78,14 +79,13 @@ function AppSidebar({
       <SidebarHeader>
         <div className="px-2 py-1">
           <Link href="/" className="flex items-center gap-2">
-            <GridaLogo className="h-5 w-5" />
-            <span className="text-lg font-bold">Icons</span>
+            <span className="text-lg font-bold">Library</span>
           </Link>
         </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Icon Sets</SidebarGroupLabel>
+          <SidebarGroupLabel>Archive</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
@@ -99,7 +99,7 @@ function AppSidebar({
                     isActive={active === set.id}
                     onClick={() => onSelect?.(set.id)}
                   >
-                    <span>{set.name ?? set.id}</span>
+                    <span>{set.id === "aac" ? "AAC" : (set.name ?? set.id)}</span>
                     <span className="ml-auto text-xs text-muted-foreground">{set.count}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -107,46 +107,9 @@ function AppSidebar({
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel>Other Resources</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="https://fonts.grida.co" target="_blank" rel="noopener noreferrer">
-                    <span>Fonts</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="https://grida.co/library" target="_blank" rel="noopener noreferrer">
-                    <span>Photos</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+
       </SidebarContent>
-      <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link href="/docs">
-                <span>API</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link href="/about">
-                <span>About</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
+
     </Sidebar>
   );
 }
@@ -310,6 +273,7 @@ function IconsExplorer() {
         />
         <main className="flex flex-1 flex-col overflow-hidden">
           <div className="border-b bg-card/40 px-6 py-4 backdrop-blur">
+            <SidebarTrigger className="mb-3" />
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">
@@ -325,7 +289,7 @@ function IconsExplorer() {
                 <InputGroup>
                   <InputGroupInput
                     type="search"
-                    placeholder="Search icons by name or keyword..."
+                    placeholder="search archive..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                   />
@@ -377,71 +341,46 @@ function IconsExplorer() {
             </div>
           )}
 
-          <div className="flex-1 overflow-y-auto" ref={listParentRef}>
+          <div className="flex-1 overflow-y-auto bg-white" ref={listParentRef}>
             {loading ? (
               <GridSkeleton />
             ) : (
-              <div className="bg-card">
-                <div
-                  className="relative w-full transition-opacity duration-150"
-                  style={{ height: virtual.getTotalSize(), opacity: isStale ? 0.6 : 1 }}
-                >
-                  {virtual.getVirtualItems().map((row) => {
-                    const start = row.index * Math.max(columns, 1);
-                    const slice = icons.slice(start, start + Math.max(columns, 1));
-                    return (
-                      <div
-                        key={row.key}
-                        className="absolute inset-x-0 grid"
-                        style={{
-                          transform: `translateY(${row.start}px)`,
-                          height: row.size,
-                          gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
-                        }}
-                      >
-                        {slice.map(({ icon, src, dark }) => (
-                          <Link
-                            key={icon.id}
-                            href={`/icons/${icon.vendor}/${encodeURIComponent(icon.name)}`}
-                            title={icon.description || icon.name}
-                            className="group flex flex-col items-center justify-center gap-2.5 border-r border-b p-3 text-center transition-colors hover:bg-accent"
-                          >
-                            <div
-                              className={
-                                dark
-                                  ? "flex h-12 w-12 items-center justify-center rounded-lg bg-neutral-900"
-                                  : "flex h-12 w-12 items-center justify-center"
-                              }
-                            >
-                              <img
-                                src={src}
-                                alt={icon.name}
-                                width={28}
-                                height={28}
-                                loading="lazy"
-                                className={
-                                  icon.vendor === "svgl"
-                                    ? "h-7 w-7 object-contain"
-                                    : "h-7 w-7 object-contain dark:invert"
-                                }
-                              />
-                            </div>
-                            <div className="flex w-full flex-col items-center">
-                              <span className="line-clamp-1 max-w-full text-xs font-medium">
-                                {icon.name}
-                              </span>
-                              <span className="text-[10px] text-muted-foreground/70">
-                                {icon.vendor}
-                              </span>
-                            </div>
-                          </Link>
-                        ))}
+              <div
+                className="grid items-start gap-6 p-6 transition-opacity duration-150"
+                style={{
+                  gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+                  opacity: isStale ? 0.6 : 1,
+                }}
+              >
+                {icons.map(({ icon, src }) => (
+                  <Link
+                    key={icon.id}
+                    href={`/icons/${icon.vendor}/${encodeURIComponent(icon.name)}`}
+                    title={icon.description || icon.name}
+                    className="group flex min-w-0 flex-col gap-3"
+                  >
+                    <div className="flex min-h-40 w-full items-center justify-center bg-white">
+                      <img
+                        src={src}
+                        alt={icon.name}
+                        loading="lazy"
+                        className="block h-auto max-h-72 w-auto max-w-full object-contain"
+                      />
+                    </div>
+
+                    <div className="min-w-0">
+                      <div className="truncate text-sm font-medium text-black">
+                        {icon.name}
                       </div>
-                    );
-                  })}
-                </div>
+                      <div className="text-xs text-neutral-500">
+                        {icon.vendor}
+                      </div>
+                    </div>
+                  </Link>
+                ))}
               </div>
             )}
+
             {!loading && icons.length === 0 && (
               <div className="p-6 text-sm text-muted-foreground">
                 No icons found. Try a different search or set.

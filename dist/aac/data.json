@@ -1,0 +1,19 @@
+{
+  "name": "AAC Library",
+  "vendor": "aac",
+  "version": "1",
+  "variants": {},
+  "files": [
+    {
+      "name": "Bakeshop",
+      "file": "src/AAC__Play__Games__bakeshop.png",
+      "properties": {},
+      "description": "",
+      "tags": [
+        "AAC",
+        "Play",
+        "Games"
+      ]
+    }
+  ]
+}

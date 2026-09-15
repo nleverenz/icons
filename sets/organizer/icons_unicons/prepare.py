@@ -1,1 +1,0 @@
-# unicons icons and json configurations are manually downloaded and placed under res/unicons

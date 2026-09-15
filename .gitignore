@@ -1,5 +1,6 @@
 .DS_Store
 .cache
-
-# dependencies (root toolchain: oxfmt/oxlint/lefthook)
 node_modules
+
+# Next.js
+www/.next
