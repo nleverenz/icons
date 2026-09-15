@@ -243,7 +243,8 @@ function IconsExplorer() {
     const controller = new AbortController();
     (async () => {
       try {
-        const res = await fetch("/search-index.json", { signal: controller.signal });
+        const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+        const res = await fetch(`${basePath}/search-index.json`, { signal: controller.signal });
         if (!res.ok) return;
         const data: SearchIndexFile = await res.json();
         setCatalog({
