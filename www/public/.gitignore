@@ -1,3 +1,10 @@
-dist
-# Generated at build time by scripts/build-search-index.mjs (prebuild step).
-search-index.json
+# Everything in this folder is ignored by default. This folder mixes a
+# few real, committed static files with content regenerated at build or
+# preview time (dist/, library/, search-index.json, and whatever gets
+# added later by a future build step). Flipping the default to "ignored"
+# means a new generated folder is safe by default — nothing needs to be
+# added here to keep it out of git. A genuinely new static asset that
+# SHOULD be committed needs one explicit "!" line below.
+*
+!.gitignore
+!llms.txt

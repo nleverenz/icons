@@ -37,6 +37,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Guard against committed build artifacts
+        run: |
+          allowed="www/public/.gitignore
+          www/public/llms.txt"
+          extra="$(git ls-files www/public | grep -vFx "$allowed" || true)"
+          if [ -n "$extra" ]; then
+            echo "::error::Found tracked files under www/public/ that should be generated at build time, not committed:"
+            echo "$extra"
+            echo "Remove them with: git rm --cached <path>"
+            exit 1
+          fi
+
       - name: Build AAC metadata
         run: ./scripts/update-site.sh
 
