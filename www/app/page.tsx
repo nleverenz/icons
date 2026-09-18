@@ -67,13 +67,15 @@ function isDarkLogo(vendor: string, variant: IconVariant): boolean {
 function TaxonomyTree({
   tree,
   docs,
-  path = ["AAC"],
+  vendor,
+  path = [],
   depth = 0,
   activePath,
   onSelectPath,
 }: {
   tree: Record<string, unknown>;
   docs: { vendor: string; tags?: string[] }[];
+  vendor: string;
   path?: string[];
   depth?: number;
   activePath?: string[];
@@ -85,7 +87,7 @@ function TaxonomyTree({
         const folderPath = [...path, name];
         const count = docs.filter(
           (doc) =>
-            doc.vendor === "aac" &&
+            doc.vendor === vendor &&
             folderPath.every((part, i) => doc.tags?.[i] === part),
         ).length;
 
@@ -113,6 +115,7 @@ function TaxonomyTree({
               <TaxonomyTree
                 tree={children as Record<string, unknown>}
                 docs={docs}
+                vendor={vendor}
                 path={folderPath}
                 depth={depth + 1}
                 activePath={activePath}
@@ -165,32 +168,49 @@ function AppSidebar({
                   <span>All</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              {vendors.map((set) => (
-                <SidebarMenuItem key={set.id}>
-                  <SidebarMenuButton
-                    isActive={active === set.id}
-                    onClick={() => onSelect?.(set.id)}
-                  >
-                    <span>{set.id === "aac" ? "AAC" : (set.name ?? set.id)}</span>
-                    <span className="ml-auto text-xs text-muted-foreground">{set.count}</span>
-                  </SidebarMenuButton>
-                  {active === set.id &&
-                    set.taxonomy &&
-                    Object.keys(set.taxonomy).length > 0 && (
-                      <TaxonomyTree
-                        docs={docs}
-                        activePath={activePath}
-                        onSelectPath={onSelectPath}
-                        tree={
-                          set.taxonomy.AAC &&
-                          typeof set.taxonomy.AAC === "object"
-                            ? (set.taxonomy.AAC as Record<string, unknown>)
-                            : set.taxonomy
-                        }
-                      />
-                    )}
-                </SidebarMenuItem>
-              ))}
+              {vendors.flatMap((set) =>
+                Object.entries(set.taxonomy ?? {}).map(([categoryName, categoryChildren]) => {
+                  const categoryPath = [categoryName];
+                  const isActiveCategory =
+                    active === set.id && activePath?.[0] === categoryName;
+                  const categoryCount = docs.filter(
+                    (doc) => doc.vendor === set.id && doc.tags?.[0] === categoryName,
+                  ).length;
+
+                  return (
+                    <SidebarMenuItem key={`${set.id}-${categoryName}`}>
+                      <SidebarMenuButton
+                        isActive={isActiveCategory}
+                        onClick={() => {
+                          onSelect?.(set.id);
+                          onSelectPath(categoryPath);
+                        }}
+                      >
+                        <span>{categoryName}</span>
+                        <span className="ml-auto text-xs text-muted-foreground">
+                          {categoryCount}
+                        </span>
+                      </SidebarMenuButton>
+                      {isActiveCategory &&
+                        typeof categoryChildren === "object" &&
+                        categoryChildren !== null &&
+                        Object.keys(categoryChildren as Record<string, unknown>).length > 0 && (
+                          <TaxonomyTree
+                            docs={docs}
+                            vendor={set.id}
+                            activePath={activePath}
+                            onSelectPath={(p) => {
+                              onSelect?.(set.id);
+                              onSelectPath(p);
+                            }}
+                            path={categoryPath}
+                            tree={categoryChildren as Record<string, unknown>}
+                          />
+                        )}
+                    </SidebarMenuItem>
+                  );
+                }),
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
