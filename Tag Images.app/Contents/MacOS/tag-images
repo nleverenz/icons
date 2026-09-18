@@ -1,0 +1,52 @@
+#!/bin/bash
+# Double-click launcher for the local tagging tool. Starts the tagging
+# server (if it isn't already running) and opens it in your browser.
+# No terminal, no typing - just double-click this app.
+
+PORT=4321
+APP_DIR="$(cd "$(dirname "$0")/.." && pwd)"      # .../Tag Images.app/Contents
+REPO_ROOT="$(cd "$APP_DIR/../.." && pwd)"        # folder the app sits in
+
+cd "$REPO_ROOT" || exit 1
+
+# Find node in common install locations - GUI-launched apps get a very
+# minimal PATH, so we can't rely on the one from your shell profile.
+find_node() {
+  for candidate in \
+    /opt/homebrew/bin/node \
+    /usr/local/bin/node \
+    "$HOME"/.volta/bin/node \
+    "$HOME"/.nvm/versions/node/*/bin/node \
+    "$HOME"/Library/pnpm/nodejs/*/bin/node \
+    "$HOME"/n/bin/node \
+  ; do
+    if [ -x "$candidate" ]; then
+      echo "$candidate"
+      return 0
+    fi
+  done
+  return 1
+}
+
+NODE_BIN="$(find_node)"
+
+if [ -z "$NODE_BIN" ]; then
+  osascript -e 'display alert "Couldn'"'"'t find Node.js" message "Open Terminal in the icons folder and run: pnpm tag" as critical'
+  exit 1
+fi
+
+# If something is already answering on the port, just open it - don't start
+# a second server.
+if ! curl -s -o /dev/null --max-time 1 "http://localhost:$PORT/"; then
+  nohup "$NODE_BIN" scripts/tag-tool.mjs > /tmp/aac-tag-tool.log 2>&1 &
+  disown
+  # Give the server a moment to come up before opening the browser.
+  for i in 1 2 3 4 5 6 7 8 9 10; do
+    if curl -s -o /dev/null --max-time 1 "http://localhost:$PORT/"; then
+      break
+    fi
+    sleep 0.5
+  done
+fi
+
+open "http://localhost:$PORT/"
