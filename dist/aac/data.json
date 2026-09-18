@@ -5,6 +5,10 @@
   "variants": {},
   "taxonomy": {
     "AAC": {
+      "Eat": {
+        "Condiments": {},
+        "Snacks": {}
+      },
       "Play": {
         "Games": {},
         "Toys": {}
@@ -13,8 +17,107 @@
   },
   "files": [
     {
+      "name": "Gochujang",
+      "file": "/library/AAC/Eat/Condiments/Gochujang.png",
+      "properties": {},
+      "description": "",
+      "tags": [
+        "AAC",
+        "Eat",
+        "Condiments"
+      ]
+    },
+    {
+      "name": "Sea Salt Seaweed Snacks Package",
+      "file": "/library/AAC/Eat/Snacks/Sea Salt Seaweed Snacks Package.png",
+      "properties": {},
+      "description": "",
+      "tags": [
+        "AAC",
+        "Eat",
+        "Snacks"
+      ]
+    },
+    {
+      "name": "Sea Salt Seaweed Snacks",
+      "file": "/library/AAC/Eat/Snacks/Sea Salt Seaweed Snacks.png",
+      "properties": {},
+      "description": "",
+      "tags": [
+        "AAC",
+        "Eat",
+        "Snacks"
+      ]
+    },
+    {
+      "name": "Seaweed Snacks",
+      "file": "/library/AAC/Eat/Snacks/Seaweed Snacks.png",
+      "properties": {},
+      "description": "",
+      "tags": [
+        "AAC",
+        "Eat",
+        "Snacks"
+      ]
+    },
+    {
+      "name": "Teriyaki Seaweed Snacks Package",
+      "file": "/library/AAC/Eat/Snacks/Teriyaki Seaweed Snacks Package.png",
+      "properties": {},
+      "description": "",
+      "tags": [
+        "AAC",
+        "Eat",
+        "Snacks"
+      ]
+    },
+    {
+      "name": "Teriyaki Seaweed Snacks",
+      "file": "/library/AAC/Eat/Snacks/Teriyaki Seaweed Snacks.png",
+      "properties": {},
+      "description": "",
+      "tags": [
+        "AAC",
+        "Eat",
+        "Snacks"
+      ]
+    },
+    {
+      "name": "Bananagrams",
+      "file": "/library/AAC/Play/Games/Bananagrams.png",
+      "properties": {},
+      "description": "",
+      "tags": [
+        "AAC",
+        "Play",
+        "Games"
+      ]
+    },
+    {
+      "name": "Buttons",
+      "file": "/library/AAC/Play/Games/Buttons.png",
+      "properties": {},
+      "description": "",
+      "tags": [
+        "AAC",
+        "Play",
+        "Games"
+      ]
+    },
+    {
       "name": "Mini Muffin Match Up",
       "file": "/library/AAC/Play/Games/Mini Muffin Match-Up.png",
+      "properties": {},
+      "description": "",
+      "tags": [
+        "AAC",
+        "Play",
+        "Games"
+      ]
+    },
+    {
+      "name": "Zingo!",
+      "file": "/library/AAC/Play/Games/Zingo!.png",
       "properties": {},
       "description": "",
       "tags": [
@@ -35,8 +138,41 @@
       ]
     },
     {
+      "name": "Alphabet Soup Cans",
+      "file": "/library/AAC/Play/Toys/Alphabet Soup Cans.png",
+      "properties": {},
+      "description": "",
+      "tags": [
+        "AAC",
+        "Play",
+        "Toys"
+      ]
+    },
+    {
       "name": "Ice Cream Counter",
       "file": "/library/AAC/Play/Toys/Ice Cream Counter.png",
+      "properties": {},
+      "description": "",
+      "tags": [
+        "AAC",
+        "Play",
+        "Toys"
+      ]
+    },
+    {
+      "name": "Magna Tiles",
+      "file": "/library/AAC/Play/Toys/Magna-tiles.png",
+      "properties": {},
+      "description": "",
+      "tags": [
+        "AAC",
+        "Play",
+        "Toys"
+      ]
+    },
+    {
+      "name": "Scooter",
+      "file": "/library/AAC/Play/Toys/Scooter.png",
       "properties": {},
       "description": "",
       "tags": [
