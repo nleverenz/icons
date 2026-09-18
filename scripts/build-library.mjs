@@ -7,6 +7,27 @@ const OUTPUT = path.resolve("dist/aac");
 
 const IMAGE_TYPES = new Set([".png", ".jpg", ".jpeg", ".webp", ".svg"]);
 
+// Custom per-image keywords come from library/metadata.json, written by the
+// local tagging tool (`pnpm tag` / scripts/tag-tool.mjs). Keyed by the same
+// path used below as `libraryPath`. Missing/invalid file just means no one
+// has tagged anything yet.
+function loadKeywordsByPath() {
+  try {
+    const raw = JSON.parse(fs.readFileSync(path.join(LIBRARY, "metadata.json"), "utf8"));
+    const map = {};
+    for (const [key, entry] of Object.entries(raw ?? {})) {
+      if (Array.isArray(entry?.keywords) && entry.keywords.length) {
+        map[key] = entry.keywords;
+      }
+    }
+    return map;
+  } catch {
+    return {};
+  }
+}
+
+const keywordsByPath = loadKeywordsByPath();
+
 function scan(dir) {
   const results = [];
 
@@ -43,13 +64,14 @@ const records = files.map((sourceFile) => {
   const folders = path.dirname(relative).split(path.sep);
 
   const libraryPath = relative.split(path.sep).join("/");
+  const keywords = keywordsByPath[libraryPath] ?? [];
 
   return {
     name: niceName(sourceFile),
     file: `/library/${libraryPath}`,
     properties: {},
     description: "",
-    tags: folders
+    tags: [...folders, ...keywords]
   };
 });
 
@@ -85,4 +107,5 @@ fs.writeFileSync(
   JSON.stringify(data, null, 2)
 );
 
-console.log(`Built ${records.length} AAC asset(s).`);
+const taggedCount = Object.keys(keywordsByPath).length;
+console.log(`Built ${records.length} AAC asset(s) (${taggedCount} with custom keywords).`);

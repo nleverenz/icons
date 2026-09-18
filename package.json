@@ -3,5 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "description": "AAC visual asset library",
-  "packageManager": "pnpm@11.5.1"
+  "packageManager": "pnpm@11.5.1",
+  "scripts": {
+    "tag": "node scripts/tag-tool.mjs"
+  }
 }
