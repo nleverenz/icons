@@ -406,7 +406,7 @@ function IconsExplorer() {
           onSelectPath={setFolderFilter}
         />
         <main className="flex flex-1 flex-col overflow-hidden">
-          <div className="border-b bg-card/40 px-6 py-4 backdrop-blur">
+          <div className="border-b bg-background px-6 py-4">
             <SidebarTrigger className="mb-3" />
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
