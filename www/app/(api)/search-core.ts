@@ -6,6 +6,10 @@ import MiniSearch, { type SearchResult } from "minisearch";
 
 export type IconVariant = {
   file: string;
+  // The real downloadable asset. Equal to `file` except for a generated
+  // preview (e.g. a PDF's page-1 thumbnail), where `file` is the thumbnail
+  // and `sourceFile` is the original.
+  sourceFile?: string;
   name: string;
   properties: Record<string, string>;
 };
@@ -17,6 +21,7 @@ export type IconDoc = {
   tags: string[];
   description: string;
   file: string; // preview/default variant file
+  sourceFile?: string; // real downloadable asset for `file` (see IconVariant)
   variants: IconVariant[];
 };
 
@@ -63,7 +68,7 @@ export type SearchOutcome = {
 // intentionally NOT searchable (display-only until embeddings land). `name` is
 // boosted over keywords. storeFields keep the ORIGINAL shapes (tags as array).
 const SEARCHABLE_FIELDS = ["name", "keywords"] as const;
-const STORE_FIELDS = ["vendor", "name", "description", "file", "variants", "tags"] as const;
+const STORE_FIELDS = ["vendor", "name", "description", "file", "sourceFile", "variants", "tags"] as const;
 
 export function createIndex(docs: IconDoc[]): MiniSearch<IconDoc> {
   const mini = new MiniSearch<IconDoc>({
@@ -93,6 +98,7 @@ function resultToDoc(r: SearchResult): IconDoc {
     tags: r.tags ?? [],
     description: r.description ?? "",
     file: r.file,
+    sourceFile: r.sourceFile,
     variants: r.variants ?? [],
   };
 }

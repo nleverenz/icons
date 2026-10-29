@@ -66,7 +66,9 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 export default async function IconPage({ params }: { params: Promise<Params> }) {
   const { icon, vendor } = await resolve(params);
   const preview = previewSrc(icon.vendor, icon.file);
-  const rawUrl = buildDownloadUrl(icon.vendor, icon.file);
+  // Download/View raw/JSON-LD point at the real asset — for a PDF that's the
+  // PDF itself, not its page-1 thumbnail (which `preview` above still is).
+  const rawUrl = buildDownloadUrl(icon.vendor, icon.sourceFile ?? icon.file);
   // svgl logos are full-color brand marks — never invert them like monochrome icons.
   const isSvgl = icon.vendor === "svgl";
 
@@ -169,7 +171,7 @@ export default async function IconPage({ params }: { params: Promise<Params> }) 
               return (
                 <a
                   key={v.file}
-                  href={buildDownloadUrl(icon.vendor, v.file)}
+                  href={buildDownloadUrl(icon.vendor, v.sourceFile ?? v.file)}
                   download
                   className={
                     dark

@@ -4,6 +4,7 @@ import path from "node:path";
 export type FileEntry = {
   name: string;
   file: string;
+  sourceFile?: string;
   properties?: Record<string, unknown>;
   description?: string;
   tags?: string[];
@@ -127,7 +128,7 @@ export async function buildAllItems() {
       vendor: data.vendor ?? id,
       version: data.version,
       name: f.name,
-      download: buildDownloadUrl(id, f.file),
+      download: buildDownloadUrl(id, f.sourceFile ?? f.file),
       properties: f.properties ?? {},
       description: f.description,
       tags: f.tags,
@@ -144,7 +145,7 @@ export async function buildSvglItems() {
       vendor: data.vendor ?? "svgl",
       version: data.version,
       name: f.name,
-      download: buildDownloadUrl("svgl", f.file),
+      download: buildDownloadUrl("svgl", f.sourceFile ?? f.file),
       properties: f.properties ?? {},
       description: f.description,
       tags: f.tags,

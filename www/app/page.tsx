@@ -341,7 +341,7 @@ function IconsExplorer() {
 
   // In-memory search + vendor filter, then variant-aware preview resolution.
   const icons = useMemo(() => {
-    if (!index) return [] as { icon: IconDoc; src: string; dark: boolean }[];
+    if (!index) return [] as { icon: IconDoc; src: string; downloadSrc: string; dark: boolean }[];
     const { items } = runSearch(index, docs, {
       q: deferredSearch,
       vendor: vendorFilter ?? undefined,
@@ -353,13 +353,14 @@ function IconsExplorer() {
         )
       : items;
 
-    const out: { icon: IconDoc; src: string; dark: boolean }[] = [];
+    const out: { icon: IconDoc; src: string; downloadSrc: string; dark: boolean }[] = [];
     for (const icon of folderItems) {
       const variant = resolveVariant(icon, variantFilters);
       if (variant) {
         out.push({
           icon,
           src: previewSrc(icon.vendor, variant.file),
+          downloadSrc: previewSrc(icon.vendor, variant.sourceFile ?? variant.file),
           dark: isDarkLogo(icon.vendor, variant),
         });
       }
@@ -504,7 +505,7 @@ function IconsExplorer() {
                   opacity: isStale ? 0.6 : 1,
                 }}
               >
-                {icons.map(({ icon, src }) => (
+                {icons.map(({ icon, src, downloadSrc }) => (
                   <div
                     key={icon.id}
                     className="group flex min-w-0 flex-col gap-3"
@@ -534,7 +535,7 @@ function IconsExplorer() {
                     </Link>
 
                     <a
-                      href={src}
+                      href={downloadSrc}
                       download
                       className="w-fit text-xs text-neutral-500 underline hover:text-black"
                     >

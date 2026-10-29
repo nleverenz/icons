@@ -87,7 +87,12 @@ function build() {
         g = { base, variants: [], description: "", tags: [] };
         groups.set(base, g);
       }
-      g.variants.push({ file: f.file, name: f.name, properties: f.properties ?? {} });
+      g.variants.push({
+        file: f.file,
+        name: f.name,
+        properties: f.properties ?? {},
+        sourceFile: f.sourceFile ?? f.file,
+      });
       // tags/description are identical across a concept's variants — take first non-empty.
       if (!g.description && f.description) g.description = f.description;
       if (!g.tags.length && Array.isArray(f.tags) && f.tags.length) g.tags = f.tags;
@@ -102,6 +107,7 @@ function build() {
         tags: g.tags,
         description: g.description,
         file: preview.file,
+        sourceFile: preview.sourceFile ?? preview.file,
         variants: g.variants,
       });
     }
