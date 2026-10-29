@@ -79,7 +79,7 @@ function TaxonomyTree({
   path?: string[];
   depth?: number;
   activePath?: string[];
-  onSelectPath: (path: string[]) => void;
+  onSelectPath: (path: string[] | undefined) => void;
 }) {
   return (
     <>
@@ -91,15 +91,23 @@ function TaxonomyTree({
             folderPath.every((part, i) => doc.tags?.[i] === part),
         ).length;
 
+        // "On the active path" covers both the exact selected node and any of
+        // its ancestors, so a branch stays expanded while you're browsing
+        // inside it. Only the exact node toggles closed on a re-click;
+        // clicking an ancestor jumps the selection up to it instead.
+        const isOnActivePath =
+          !!activePath && folderPath.every((part, i) => activePath[i] === part);
+        const isExactActive = isOnActivePath && activePath?.length === folderPath.length;
+
         return (
         <div key={`${depth}-${name}`}>
           <button
             type="button"
-            onClick={() => onSelectPath(folderPath)}
+            onClick={() =>
+              onSelectPath(isExactActive ? folderPath.slice(0, -1) : folderPath)
+            }
             className={`flex w-full items-center rounded-md py-1.5 text-sm hover:bg-sidebar-accent ${
-              activePath?.join("/") === folderPath.join("/")
-                ? "bg-sidebar-accent font-medium"
-                : ""
+              isExactActive ? "bg-sidebar-accent font-medium" : ""
             }`}
             style={{ paddingLeft: `${16 + depth * 16}px` }}
           >
@@ -109,7 +117,8 @@ function TaxonomyTree({
             </span>
           </button>
 
-          {typeof children === "object" &&
+          {isOnActivePath &&
+            typeof children === "object" &&
             children !== null &&
             Object.keys(children as Record<string, unknown>).length > 0 ? (
               <TaxonomyTree
@@ -147,7 +156,7 @@ function AppSidebar({
   active?: string;
   onSelect?: (id: string | undefined) => void;
   activePath?: string[];
-  onSelectPath: (path: string[]) => void;
+  onSelectPath: (path: string[] | undefined) => void;
 }) {
   return (
     <Sidebar>
@@ -182,8 +191,13 @@ function AppSidebar({
                       <SidebarMenuButton
                         isActive={isActiveCategory}
                         onClick={() => {
-                          onSelect?.(set.id);
-                          onSelectPath(categoryPath);
+                          if (isActiveCategory) {
+                            onSelect?.(undefined);
+                            onSelectPath(undefined);
+                          } else {
+                            onSelect?.(set.id);
+                            onSelectPath(categoryPath);
+                          }
                         }}
                       >
                         <span>{categoryName}</span>
